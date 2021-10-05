@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top mb-4">
+    <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand font-weight-bold" href="#">Chat App</a>
+
+        <!-- Toggler Button -->
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar-links">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbar-links">
+            <ul class="navbar-nav  ml-auto">
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_signup' %}">Sign up</a>
+                </li>
+              {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
