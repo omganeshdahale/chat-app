@@ -46,8 +46,10 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    'channels',
     "crispy_forms",
     "users.apps.UsersConfig",
+    "chat"
 ]
 
 SITE_ID = 1
@@ -179,3 +181,5 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_UNIQUE_EMAIL = True
+
+ASGI_APPLICATION = 'myproject.asgi.application'

@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html><html class=''>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
+
+<script src="https://use.typekit.net/hoy3lrg.js"></script>
+<script>try{Typekit.load({ async: true });}catch(e){}</script>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+
+<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+<script type="text/javascript" src="{% static 'chat/js/app.js' %}"></script>
+<script type="text/javascript" src="{% static 'chat/js/chat.js' %}"></script>
+
+<title>Chat - Chat App</title>
+</head>
+<body>
+<div id="frame">
+  <div id="sidepanel">
+    <div id="profile">
+      <div class="wrap">
+        <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />
+        <p>Mike Ross</p>
+      </div>
+    </div>
+    <div id="search">
+      <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+      <input type="text" placeholder="Search contacts..." />
+    </div>
+    <div id="contacts">
+      <ul>
+        <li class="contact">
+          <div class="wrap">
+            <span class="contact-status busy">5</span>
+            <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
+            <div class="meta">
+              <p class="name">Louis Litt</p>
+              <p class="preview">You just got LITT up, Mike.</p>
+            </div>
+          </div>
+        </li>
+        <li class="contact active">
+          <div class="wrap">
+            <span class="contact-status online"></span>
+            <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+            <div class="meta">
+              <p class="name">Harvey Specter</p>
+              <p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
+            </div>
+          </div>
+        </li>
+        <li class="contact">
+          <div class="wrap">
+            <span class="contact-status away"></span>
+            <img src="http://emilcarlsson.se/assets/rachelzane.png" alt="" />
+            <div class="meta">
+              <p class="name">Rachel Zane</p>
+              <p class="preview">I was thinking that we could have chicken tonight, sounds good?</p>
+            </div>
+          </div>
+        </li>
+        <li class="contact">
+          <div class="wrap">
+            <span class="contact-status"></span>
+            <img src="http://emilcarlsson.se/assets/donnapaulsen.png" alt="" />
+            <div class="meta">
+              <p class="name">Donna Paulsen</p>
+              <p class="preview">Mike, I know everything! I'm Donna..</p>
+            </div>
+          </div>
+        </li>
+        <li class="contact">
+          <div class="wrap">
+            <img src="http://emilcarlsson.se/assets/jessicapearson.png" alt="" />
+            <div class="meta">
+              <p class="name">Jessica Pearson</p>
+              <p class="preview">Have you finished the draft on the Hinsenburg deal?</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div id="bottom-bar">
+      <a id="addcontact" class="btn rounded-0"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></a>
+      <a class="btn rounded-0"><i class="fa fa-users fa-fw" aria-hidden="true"></i> <span>Create group</span></a>
+      <a class="btn rounded-0" href="{% url 'account_profile' %}"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Profile</span></a>
+      <a class="btn rounded-0 text-danger" href="{% url 'account_logout' %}"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> <span>Logout</span></a>
+    </div>
+  </div>
+  <div class="content">
+    <div class="contact-profile">
+      <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+      <p>Harvey Specter</p>
+      <div class="social-media">
+        <i class="fa fa-facebook" aria-hidden="true"></i>
+        <i class="fa fa-twitter" aria-hidden="true"></i>
+         <i class="fa fa-instagram" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="messages">
+      <ul id="chat-log">
+        <li class="sent">
+          <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
+          <p>
+            How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!
+            <small class="small d-block mt-2">Mike Ross | Oct 2, 2021, 8:21 PM</small>
+          </p>
+        </li>
+        <li class="replies">
+          <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+          <p>
+            When you're backed against the wall, break the god damn thing down.
+            <small class="small d-block mt-2">Harvey Specter | Oct 2, 2021, 8:21 PM</small>
+          </p>
+        </li>
+      </ul>
+    </div>
+    <div class="message-input">
+      <div class="wrap">
+      <input id="chat-message-input" type="text" placeholder="Write your message..." />
+      <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+      <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
