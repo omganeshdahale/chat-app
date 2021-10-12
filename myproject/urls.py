@@ -17,13 +17,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from users import views as users_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
-    path("accounts/profile/", users_views.profile, name="account_profile"),
-    path('', include('chat.urls', namespace='chat')),
+    path("accounts/", include("users.urls", namespace="users")),
+    path("friendship/", include("friends.urls")),
+    path("", include("chat.urls", namespace="chat")),
 ]
 
 if settings.DEBUG:

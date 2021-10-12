@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Friend requests{% endblock title %}
+
+{% block content %}
+    <div class="container my-4">
+        <h1>Friend requests</h1>
+        {% if requests %}
+            <ul>
+                {% for friendship_request in requests %}
+                    <li>
+                        {% if not friendship_request.viewed %}
+                            <span class="badge badge-danger">New</span>
+                        {% endif %}
+                        {{ friendship_request.from_user }} to {{ friendship_request.to_user }} 
+                        <a href="{% url 'friendship_requests_detail' friendship_request.id %}">view</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h2>No requests :(</h2>
+        {% endif %}
+    </div>
+{% endblock content %}

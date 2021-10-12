@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Find users{% endblock title %}
+
+{% block content %}
+  <h1>Find users</h1>
+  <form>
+    <div class="input-group my-3">
+      <input class="form-control py-2" type="search" name="search" placeholder="Search users">
+      <span class="input-group-append">
+        <button class="btn btn-outline-secondary">
+            <i class="fa fa-search"></i>
+        </button>
+      </span>
+    </div>
+  </form>
+
+  <ul>
+    {% for user in users %}
+      <li>{{ user }} <a href="{% url 'users:user_detail' user.username %}">view</a></li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

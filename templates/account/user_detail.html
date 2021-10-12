@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user }}{% endblock title %}
+
+{% block content %}
+  <div class="container my-4">
+    <div class="media">
+      <img class="mr-3" src="{{ user.profile_pic.url }}" style="height: 96px;width: 96px;">
+      <div class="media-body">
+        <h2>{{ user }}</h2>
+        <p class="text-secondary">{{ user.email }}</p>
+        <p class="text-secondary">{{ user.about_me }}</p>
+      </div>
+    </div>
+    {% if request.user != user %}
+      {% if is_friend %}
+        <form method="POST" action="{% url 'remove_friend' user.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-danger">remove friend</button>
+        </form>
+      {% else %}
+        <a class="btn btn-primary" href="{% url 'friendship_add_friend' user.username %}">add as friend</a>
+      {% endif %}
+    {% endif %}
+  </div>
+{% endblock content %}

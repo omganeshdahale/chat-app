@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Friends{% endblock title %}
+
+{% block content %}
+  <div class="container my-4">
+    <h1>Friends</h1>
+    {% if friends %}
+      <ul>
+        {% for friend in friends %}
+          <li>{{ friend }} <a href="{% url 'users:user_detail' friend.username %}">view</a></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <h2>No friends :(</h2>
+    {% endif %}
+  </div>
+{% endblock %}

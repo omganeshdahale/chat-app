@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    'channels',
+    "channels",
     "crispy_forms",
     "users.apps.UsersConfig",
-    "chat"
+    "friendship",
+    "friends",
+    "chat",
 ]
 
 SITE_ID = 1
@@ -182,4 +184,4 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_UNIQUE_EMAIL = True
 
-ASGI_APPLICATION = 'myproject.asgi.application'
+ASGI_APPLICATION = "myproject.asgi.application"

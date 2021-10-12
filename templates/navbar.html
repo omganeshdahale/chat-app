@@ -1,3 +1,4 @@
+{% load friendshiptags %}
 <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top mb-4">
     <div class="container">
         <!-- Brand -->
@@ -15,8 +16,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'chat:chat' %}">Chat</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Friends <span class="badge badge-danger">{% friend_request_count user %}</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="{% url 'users:user_list' %}">Find users</a>
+                      <a class="dropdown-item" href="{% url 'friend_list' %}">Friends</a>
+                      <a class="dropdown-item" href="{% url 'friendship_request_list' %}">
+                        Friend requests <span class="badge badge-danger">{% friend_request_count user %}</span>
+                      </a>
+                      <a class="dropdown-item" href="{% url 'friendship_requests_rejected' %}">Rejected friend requests</a>
+                    </div>
+                  </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_profile' %}">Profile</a>
+                    <a class="nav-link" href="{% url 'users:profile' %}">Profile</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>

@@ -13,6 +13,7 @@ defusedxml==0.7.1
 Django==3.2.8
 django-allauth==0.45.0
 django-crispy-forms==1.13.0
+django-friendship==1.9.4
 hyperlink==21.0.0
 idna==3.2
 incremental==21.3.0

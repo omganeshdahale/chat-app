@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Friend request{% endblock title %}
+
+{% block content %}
+  <div class="container my-4">
+    <p>{{ friendship_request.from_user }} wants to be friends with {{ friendship_request.to_user }}</p>
+
+    <form class="d-inline" method="post" action="{% url 'friendship_accept' friendship_request.pk %}">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" value="accept" />
+    </form>
+
+    <form class="d-inline" method="post" action="{% url 'friendship_reject' friendship_request.pk %}">
+    {% csrf_token %}
+    <input class="btn btn-danger" type="submit" value="reject" />
+    </form>
+  </div>
+{% endblock content %}
