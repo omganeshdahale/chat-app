@@ -4,4 +4,5 @@ from django.shortcuts import render
 
 @login_required
 def chat(request):
-    return render(request, "chat/chat.html")
+    chats = request.user.chats.all()
+    return render(request, "chat/chat.html", {"chats": chats})

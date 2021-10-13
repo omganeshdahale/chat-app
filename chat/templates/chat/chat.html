@@ -1,4 +1,5 @@
 {% load static %}
+{% load chat_tags %}
 <!DOCTYPE html><html class=''>
 <head>
 
@@ -36,55 +37,17 @@
     </div>
     <div id="contacts">
       <ul>
-        <li class="contact">
-          <div class="wrap">
-            <span class="contact-status busy">5</span>
-            <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
-            <div class="meta">
-              <p class="name">Louis Litt</p>
-              <p class="preview">You just got LITT up, Mike.</p>
+        {% for chat in chats %}
+          <li class="contact">
+            <div class="wrap">
+              <img src="{{ chat|get_image_url:user }}" alt="" />
+              <div class="meta">
+                <p class="name">{{ chat|get_name:user }}</p>
+                <p class="preview">Have you finished the draft on the Hinsenburg deal?</p>
+              </div>
             </div>
-          </div>
-        </li>
-        <li class="contact active">
-          <div class="wrap">
-            <span class="contact-status online"></span>
-            <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-            <div class="meta">
-              <p class="name">Harvey Specter</p>
-              <p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
-            </div>
-          </div>
-        </li>
-        <li class="contact">
-          <div class="wrap">
-            <span class="contact-status away"></span>
-            <img src="http://emilcarlsson.se/assets/rachelzane.png" alt="" />
-            <div class="meta">
-              <p class="name">Rachel Zane</p>
-              <p class="preview">I was thinking that we could have chicken tonight, sounds good?</p>
-            </div>
-          </div>
-        </li>
-        <li class="contact">
-          <div class="wrap">
-            <span class="contact-status"></span>
-            <img src="http://emilcarlsson.se/assets/donnapaulsen.png" alt="" />
-            <div class="meta">
-              <p class="name">Donna Paulsen</p>
-              <p class="preview">Mike, I know everything! I'm Donna..</p>
-            </div>
-          </div>
-        </li>
-        <li class="contact">
-          <div class="wrap">
-            <img src="http://emilcarlsson.se/assets/jessicapearson.png" alt="" />
-            <div class="meta">
-              <p class="name">Jessica Pearson</p>
-              <p class="preview">Have you finished the draft on the Hinsenburg deal?</p>
-            </div>
-          </div>
-        </li>
+          </li>
+        {% endfor %}
       </ul>
     </div>
     <div id="bottom-bar">

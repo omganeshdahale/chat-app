@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "friendship",
     "friends",
-    "chat",
+    "chat.apps.ChatConfig",
 ]
 
 SITE_ID = 1
@@ -185,3 +185,11 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_UNIQUE_EMAIL = True
 
 ASGI_APPLICATION = "myproject.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
