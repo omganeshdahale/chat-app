@@ -40,10 +40,13 @@
         {% for chat in chats %}
           <li id="chat_{{ chat.pk }}" class="contact" data-pk={{ chat.pk }}>
             <div class="wrap">
+              <span class="contact-status busy text-center" {% if not chat|get_unread_messages_count:user %}style="display: none;"{% endif %}>
+                {{ chat|get_unread_messages_count:user }}
+              </span>
               <img src="{{ chat|get_image_url:user }}" alt="" />
               <div class="meta">
                 <p class="name">{{ chat|get_name:user }}</p>
-                <p class="preview">Have you finished the draft on the Hinsenburg deal?</p>
+                <p class="preview">{{ chat|get_last_message_preview:user }}</p>
               </div>
             </div>
           </li>
@@ -59,8 +62,8 @@
   </div>
   <div class="content" style="display: none;">
     <div class="contact-profile">
-      <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-      <p>Harvey Specter</p>
+      <img src="" alt="" />
+      <p></p>
       <div class="social-media">
         <i class="fa fa-facebook" aria-hidden="true"></i>
         <i class="fa fa-twitter" aria-hidden="true"></i>
