@@ -33,7 +33,11 @@ class ChatConsumer(WebsocketConsumer):
         elif text_data_json["command"] == "read_messages":
             self.read_messages(text_data_json["chat_pk"])
         elif text_data_json["command"] == "fetch_messages":
-            self.fetch_messages(text_data_json["chat_pk"])
+            self.fetch_n_messages(
+                text_data_json["chat_pk"], 10, text_data_json.get("end_message_pk")
+            )
+        elif text_data_json["command"] == "fetch_chat":
+            self.fetch_chat(text_data_json["chat_pk"])
 
     def new_chat(self, event):
         chat = Chat.objects.get(pk=event["chat_pk"])
@@ -81,15 +85,32 @@ class ChatConsumer(WebsocketConsumer):
             for message in messages:
                 message.read_by.add(self.user)
 
-    def fetch_messages(self, chat_pk):
+    def fetch_n_messages(self, chat_pk, n, end_message_pk=None):
         chat = Chat.objects.get(pk=chat_pk)
         if chat.is_member(self.user):
-            messages = chat.messages.all()
+            if end_message_pk:
+                message = Message.objects.get(pk=end_message_pk)
+                messages = list(chat.messages.filter(created__lt=message.created)[:n])
+            else:
+                messages = list(chat.messages.all()[:n])
+
             text_data = {
                 "command": "fetched_messages",
-                "chat_pk": chat.pk,
-                "name": chat.get_name(self.user),
-                "image_url": chat.get_image(self.user).url,
                 "messages": [m.to_dict() for m in messages],
+                "end_message_pk": messages[-1].pk if messages else None,
+                "initial": end_message_pk == None,
             }
             self.send(text_data=json.dumps(text_data))
+
+    def fetch_chat(self, chat_pk):
+        chat = Chat.objects.get(pk=chat_pk)
+        self.send(
+            text_data=json.dumps(
+                {
+                    "command": "fetched_chat",
+                    "chat_pk": chat.pk,
+                    "name": chat.get_name(self.user),
+                    "image_url": chat.get_image(self.user).url,
+                }
+            )
+        )

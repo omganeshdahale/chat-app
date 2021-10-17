@@ -1,6 +1,5 @@
 $(document).ready(function () {
-    function addMessage(author, author_img_url, datetime) {
-        // add message to chat log
+    function getMessage(message, author, author_img_url, datetime) {
         const dt = new Date(datetime).toLocaleString();
         const source = author === username ? "replies" : "sent";
         const name = author === username ? "You" : author;
@@ -12,13 +11,14 @@ $(document).ready(function () {
         </li>`);
         $msg.find("p").prepend(document.createTextNode(message));
         $msg.find(".name").text(name);
-        $("#chat-log").append($msg);
+        return $msg;
     }
 
     function addChat(chat_pk, name, image_url) {
         const $chat =
             $(`<li id="chat_${chat_pk}" class="contact" data-pk=${chat_pk}>
             <div class="wrap">
+              <span class="contact-status busy text-center" style="display: none;"></span>
               <img src="${image_url}" alt="" />
               <div class="meta">
                 <p class="name"></p>
@@ -38,6 +38,9 @@ $(document).ready(function () {
         message,
         unread_messages_count
     ) {
+        // move to top
+        $("#contacts ul").prepend($(`#chat_${chat_pk}`));
+
         // update preview
         const name = author === username ? "You" : author;
         $(`#chat_${chat_pk}`).find(".preview").text(`${name}: ${message}`);
@@ -50,7 +53,9 @@ $(document).ready(function () {
             return;
         }
 
-        addMessage(author, author_img_url, datetime);
+        $("#chat-log").append(
+            getMessage(message, author, author_img_url, datetime)
+        );
         const $messages = $(".messages");
         $messages.scrollTop($messages[0].scrollHeight);
 
@@ -64,29 +69,44 @@ $(document).ready(function () {
 
     function loadMessages(messages) {
         for (message of messages) {
-            addMessage(
-                message["author"],
-                message["author_img_url"],
-                message["datetime"]
+            $("#chat-log").prepend(
+                getMessage(
+                    message["message"],
+                    message["author"],
+                    message["author_img_url"],
+                    message["datetime"]
+                )
             );
         }
     }
 
-    function fetchedMessages(chat_pk, name, image_url, messages) {
+    function fetchedMessages(messages, end_message_pk, initial) {
+        if (!messages.length) {
+            return;
+        }
+        loadMessages(messages);
+        if (initial) {
+            const $messages = $(".messages");
+            $messages.scrollTop($messages[0].scrollHeight);
+        }
+        endMessagePk = end_message_pk;
+        blockFetch = false;
+    }
+
+    function fetchedChat(chat_pk, name, image_url) {
         $(".contact-profile p").text(name);
         $(".contact-profile img").attr("src", image_url);
         const $chat = $(`#chat_${chat_pk}`);
         $chat.find(".name").text(name);
         $chat.find("img").attr("src", image_url);
-        loadMessages(messages);
-        const $messages = $(".messages");
-        $messages.scrollTop($messages[0].scrollHeight);
     }
 
     const username = JSON.parse(
         document.getElementById("username").textContent
     );
     let activeChatPk = null;
+    let endMessagePk = null;
+    let blockFetch = false;
     const chatSocket = new WebSocket(
         "ws://" + window.location.host + "/ws/chat/"
     );
@@ -107,11 +127,12 @@ $(document).ready(function () {
             );
         } else if (data["command"] === "fetched_messages") {
             fetchedMessages(
-                data["chat_pk"],
-                data["name"],
-                data["image_url"],
-                data["messages"]
+                data["messages"],
+                data["end_message_pk"],
+                data["initial"]
             );
+        } else if (data["command"] === "fetched_chat") {
+            fetchedChat(data["chat_pk"], data["name"], data["image_url"]);
         }
     };
 
@@ -151,10 +172,19 @@ $(document).ready(function () {
         $(".contact").removeClass("active");
         $(this).addClass("active");
         $(this).find(".contact-status.busy").hide();
+
         $(".content").show();
         $("#chat-log").empty();
         $input.focus();
 
+        blockFetch = true;
+        endMessagePk = null;
+        chatSocket.send(
+            JSON.stringify({
+                command: "fetch_chat",
+                chat_pk: activeChatPk,
+            })
+        );
         chatSocket.send(
             JSON.stringify({
                 command: "fetch_messages",
@@ -167,5 +197,18 @@ $(document).ready(function () {
                 chat_pk: activeChatPk,
             })
         );
+    });
+
+    $(".messages").scroll(function (e) {
+        if (!blockFetch && $(this).scrollTop() === 0) {
+            blockFetch = true;
+            chatSocket.send(
+                JSON.stringify({
+                    command: "fetch_messages",
+                    chat_pk: activeChatPk,
+                    end_message_pk: endMessagePk,
+                })
+            );
+        }
     });
 });

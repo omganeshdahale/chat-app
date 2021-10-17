@@ -4,5 +4,9 @@ from django.shortcuts import render
 
 @login_required
 def chat(request):
-    chats = request.user.chats.all()
+    chats = sorted(
+        request.user.chats.all(),
+        key=lambda c: c.get_last_message_or_created_datetime(),
+        reverse=True,
+    )
     return render(request, "chat/chat.html", {"chats": chats})
