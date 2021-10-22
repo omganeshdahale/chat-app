@@ -93,8 +93,9 @@ $(document).ready(function () {
         blockFetch = false;
     }
 
-    function fetchedChat(chat_pk, name, image_url) {
-        $(".contact-profile p").text(name);
+    function fetchedChat(chat_pk, name, image_url, detail_url) {
+        $(".contact-profile a").text(name);
+        $(".contact-profile a").attr("href", detail_url);
         $(".contact-profile img").attr("src", image_url);
         const $chat = $(`#chat_${chat_pk}`);
         $chat.find(".name").text(name);
@@ -110,6 +111,13 @@ $(document).ready(function () {
     const chatSocket = new WebSocket(
         "ws://" + window.location.host + "/ws/chat/"
     );
+
+    function removeChat(chat_pk) {
+        $(`#chat_${chat_pk}`).remove();
+        if (activeChatPk === chat_pk) {
+            $(".content").hide();
+        }
+    }
 
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
@@ -132,7 +140,14 @@ $(document).ready(function () {
                 data["initial"]
             );
         } else if (data["command"] === "fetched_chat") {
-            fetchedChat(data["chat_pk"], data["name"], data["image_url"]);
+            fetchedChat(
+                data["chat_pk"],
+                data["name"],
+                data["image_url"],
+                data["detail_url"]
+            );
+        } else if (data["command"] == "remove_chat") {
+            removeChat(data["chat_pk"]);
         }
     };
 

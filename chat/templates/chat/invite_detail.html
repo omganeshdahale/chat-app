@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ invite.chatgroup }} invite{% endblock title %}
+
+{% block content %}
+  <div class="container my-4">
+    <div class="media mb-2">
+      <img class="mr-3" src="{{ invite.chatgroup.image.url }}" style="height: 96px;width: 96px;">
+      <div class="media-body">
+        <h2>{{ invite.chatgroup }}</h2>
+        <p class="text-secondary">{{ invite.chatgroup.description }}</p>
+      </div>
+    </div>
+    <form method="POST">
+      {% csrf_token %}
+      <button class="btn btn-primary">join</button>
+    </form>
+{% endblock content %}
+

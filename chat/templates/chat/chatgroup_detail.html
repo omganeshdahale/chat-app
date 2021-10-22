@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ chatgroup }}{% endblock title %}
+
+{% block content %}
+  <div class="container my-4">
+    <div class="media mb-2">
+      <img class="mr-3" src="{{ chatgroup.image.url }}" style="height: 96px;width: 96px;">
+      <div class="media-body">
+        <h2>{{ chatgroup }}</h2>
+        <p class="text-secondary">{{ chatgroup.description }}</p>
+      </div>
+    </div>
+    {% if user == chatgroup.owner %}
+      <a href="{% url 'chat:invite_list' chatgroup.pk %}" class="btn btn-primary">invites</a>
+      <a href="{% url 'chat:chatgroup_edit' chatgroup.pk %}" class="btn btn-primary">edit</a>
+    {% endif %}
+    <form method="POST" action="{% url 'chat:chatgroup_leave' chatgroup.pk %}" class="d-inline js-confirm-form-submit" data-confirm-msg="are you sure to leave?">
+      {% csrf_token %}
+      <button class="btn btn-danger">leave</button>
+    </form>
+    <hr>
+    <h3>Members</h3>
+    <ul>
+      <li class="mb-1">
+        {{ chatgroup.owner }} 
+        <span class="badge badge-success">owner</span> 
+        <a href="{% url 'users:user_detail' chatgroup.owner.username %}">view</a>
+      </li>
+      {% for member in chatgroup.get_ordinary_members %}
+        <li class="mb-1">
+          {{ member }} 
+          <a href="{% url 'users:user_detail' member.username %}">view</a> 
+          {% if user == chatgroup.owner %}
+            <form method="POST" action="{% url 'chat:chatgroup_makeowner' chatgroup.pk member.pk %}" class="d-inline js-confirm-form-submit" data-confirm-msg="you will no longer be the owner.&#10;are you sure to continue?">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-outline-danger">make owner</button>
+            </form>
+            <form method="POST" action="{% url 'chat:chatgroup_remove_member' chatgroup.pk member.pk %}" class="d-inline js-confirm-form-submit" data-confirm-msg="are you sure to remove {{ member }}?">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-danger">remove</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script type="text/javascript" src="{% static 'js/confirm_form_submit.js' %}"></script>
+{% endblock extra_scripts %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ chatgroup }} invites{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h1>{{ chatgroup }} invites</h1>
+        <hr>
+        <form method="POST" action="{% url 'chat:invite_create' chatgroup.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-primary">Create invite</button>
+        </form>
+        <div class="table-responsive mt-4">
+        <table class="table table-bordered table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Inviter</th>
+              <th scope="col">Link</th>
+              <th scope="col">Uses</th>
+              <th scope="col">Created on</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for invite in chatgroup.invites.all %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ invite.inviter }}</td>
+                <td>
+                    <div class="input-group js-copy-to-clipboard">
+                      <input class="form-control" type="text" value="http://localhost:8000{% url 'chat:invite_detail' invite.id %}" readonly>
+                      <span class="input-group-append">
+                        <button class="btn btn-sm btn-primary">Copy</button>
+                      </span>
+                    </div>
+                </td>
+                <td>{{ invite.uses }}</td>
+                <td>{{ invite.created }}</td>
+                <td>
+                    <form method="POST" action="{% url 'chat:invite_delete' invite.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.js-copy-to-clipboard button').click(function(){
+                value = $(this).closest('.js-copy-to-clipboard').find('input').val();
+                navigator.clipboard.writeText(value);
+                alert('copied to clipboard');
+            });
+        });
+    </script>
+{% endblock extra_scripts %}

@@ -1,8 +1,11 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from .models import Chat, Message
+
+User = get_user_model()
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -41,7 +44,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def new_chat(self, event):
         chat = Chat.objects.get(pk=event["chat_pk"])
-        if chat.members.filter(pk=self.user.pk).exists():
+        if chat.is_member(self.user):
             async_to_sync(self.channel_layer.group_add)(
                 f"chat_{chat.pk}", self.channel_name
             )
@@ -111,6 +114,18 @@ class ChatConsumer(WebsocketConsumer):
                     "chat_pk": chat.pk,
                     "name": chat.get_name(self.user),
                     "image_url": chat.get_image(self.user).url,
+                    "detail_url": chat.get_detail_url(self.user),
                 }
             )
         )
+
+    def remove_chat(self, event):
+        user = User.objects.get(pk=event["user_pk"])
+        if user == self.user:
+            chat_pk = event["chat_pk"]
+            async_to_sync(self.channel_layer.group_discard)(
+                f"chat_{chat_pk}", self.channel_name
+            )
+            self.send(
+                text_data=json.dumps({"command": "remove_chat", "chat_pk": chat_pk})
+            )
