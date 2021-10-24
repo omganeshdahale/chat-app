@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
-from friendship.models import Friend, FriendshipRequest
+from friendship.exceptions import AlreadyExistsError
+from friendship.models import Block, Friend, FriendshipRequest
 
 User = get_user_model()
 
@@ -95,3 +96,43 @@ def remove_friend(request, pk):
     messages.success(request, f"Removed friend {friend}")
 
     return redirect("users:user_detail", username=friend.username)
+
+
+@login_required
+def block_list(request):
+    blocking = Block.objects.blocking(request.user)
+    return render(request, "friendship/block/block_list.html", {"blocking": blocking})
+
+
+@login_required
+def block_add(request, blocked_username, template_name="friendship/block/add.html"):
+    """Create a following relationship"""
+    ctx = {"blocked_username": blocked_username}
+
+    if request.method == "POST":
+        blocked = User.objects.get(username=blocked_username)
+        blocker = request.user
+        try:
+            Block.objects.add_block(blocker, blocked)
+        except AlreadyExistsError as e:
+            ctx["errors"] = ["%s" % e]
+        else:
+            messages.success(request, f"blocked {blocked}")
+            return redirect("users:user_detail", username=blocked_username)
+
+    return render(request, template_name, ctx)
+
+
+@login_required
+def block_remove(
+    request, blocked_username, template_name="friendship/block/remove.html"
+):
+    """Remove a following relationship"""
+    if request.method == "POST":
+        blocked = User.objects.get(username=blocked_username)
+        blocker = request.user
+        Block.objects.remove_block(blocker, blocked)
+        messages.success(request, f"unblocked {blocked}")
+        return redirect("users:user_detail", username=blocked_username)
+
+    return render(request, template_name, {"blocked_username": blocked_username})

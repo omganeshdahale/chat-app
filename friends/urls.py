@@ -45,4 +45,19 @@ urlpatterns = [
         view=remove_friend,
         name="remove_friend",
     ),
+    path(
+        "block/add/<slug:blocked_username>/",
+        view=block_add,
+        name="block_add",
+    ),
+    path(
+        "block/remove/<slug:blocked_username>/",
+        view=block_remove,
+        name="block_remove",
+    ),
+    path(
+        "blocking/",
+        view=block_list,
+        name="block_list",
+    ),
 ]

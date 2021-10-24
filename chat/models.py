@@ -2,6 +2,7 @@ import uuid
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from friendship.models import Block
 
 
 class Chat(models.Model):
@@ -45,6 +46,12 @@ class Chat(models.Model):
 
     def is_member(self, user):
         return self.members.filter(pk=user.pk).exists()
+
+    def is_blocked(self, user):
+        if hasattr(self, "chatgroup"):
+            return False
+        other_user = self.members.exclude(pk=user.pk)[0]
+        return Block.objects.is_blocked(user, other_user)
 
 
 class Message(models.Model):

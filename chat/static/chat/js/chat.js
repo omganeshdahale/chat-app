@@ -119,6 +119,12 @@ $(document).ready(function () {
         }
     }
 
+    function alertBlock() {
+        alert(
+            "You are blocked by this user or you have blocked this user or both"
+        );
+    }
+
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
 
@@ -148,6 +154,8 @@ $(document).ready(function () {
             );
         } else if (data["command"] == "remove_chat") {
             removeChat(data["chat_pk"]);
+        } else if (data["command"] == "alert_block") {
+            alertBlock();
         }
     };
 
@@ -178,7 +186,7 @@ $(document).ready(function () {
         }
     });
 
-    $(".contact").click(function (e) {
+    $("#contacts").on("click", ".contact", function (e) {
         if (activeChatPk === $(this).data("pk")) {
             return;
         }

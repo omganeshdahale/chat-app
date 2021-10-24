@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
-from friendship.models import Friend
+from friendship.models import Block, Friend
 from .forms import UserUpdateForm
 
 User = get_user_model()
@@ -36,5 +36,6 @@ def user_list(request):
 def user_detail(request, username):
     user = get_object_or_404(User, username=username)
     is_friend = Friend.objects.are_friends(request.user, user)
-    context = {"user": user, "is_friend": is_friend}
+    is_blocked = Block.objects.filter(blocker=request.user, blocked=user)
+    context = {"user": user, "is_friend": is_friend, "is_blocked": is_blocked}
     return render(request, "account/user_detail.html", context)

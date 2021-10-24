@@ -68,6 +68,9 @@ class ChatConsumer(WebsocketConsumer):
     def send_message(self, chat_pk, message):
         chat = Chat.objects.get(pk=chat_pk)
         if chat.is_member(self.user):
+            if chat.is_blocked(self.user):
+                return self.send(text_data=json.dumps({"command": "alert_block"}))
+
             m = Message.objects.create(sender=self.user, chat=chat, message=message)
             async_to_sync(self.channel_layer.group_send)(
                 f"chat_{chat.pk}",

@@ -14,12 +14,17 @@
     </div>
     {% if request.user != user %}
       {% if is_friend %}
-        <form method="POST" action="{% url 'remove_friend' user.pk %}">
+        <form method="POST" action="{% url 'remove_friend' user.pk %}" class="d-inline">
           {% csrf_token %}
           <button class="btn btn-danger">remove friend</button>
         </form>
       {% else %}
         <a class="btn btn-primary" href="{% url 'friendship_add_friend' user.username %}">add as friend</a>
+      {% endif %}
+      {% if is_blocked %}
+        <a class="btn btn-secondary" href="{% url 'block_remove' user.username %}">unblock</a>
+      {% else %}
+        <a class="btn btn-danger" href="{% url 'block_add' user.username %}">block</a>
       {% endif %}
     {% endif %}
   </div>

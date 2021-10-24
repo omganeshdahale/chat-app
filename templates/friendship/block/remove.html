@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Remove block{% endblock title %}
+
+{% block content %}
+  <div class="container my-4">
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="blocked_username" value="{{ blocked_username }}" />
+      <input class="btn btn-primary" type="submit" value="remove {{ blocked_username }} from block list" />
+    </form>
+  </div>
+{% endblock content %}
