@@ -108,7 +108,7 @@ $(document).ready(function () {
     let activeChatPk = null;
     let endMessagePk = null;
     let blockFetch = false;
-    const chatSocket = new WebSocket(
+    const chatSocket = new ReconnectingWebSocket(
         "ws://" + window.location.host + "/ws/chat/"
     );
 
