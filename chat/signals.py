@@ -7,7 +7,11 @@ from .models import Chat
 
 @receiver(friendship_request_accepted)
 def create_chat(from_user, to_user, **kwargs):
-    if Chat.objects.filter(members=from_user).filter(members=to_user).exists():
+    if (
+        Chat.objects.filter(members=from_user, chatgroup=None)
+        .filter(members=to_user)
+        .exists()
+    ):
         return
 
     chat = Chat.objects.create()
