@@ -1,6 +1,8 @@
 # Chat app
 Chat app in Django
 
+LINK: https://djangochat.live
+
 ## Getting started
 ### Requirements
  - Python 3.6+
