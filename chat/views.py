@@ -88,7 +88,7 @@ def chatgroup_delete(request, pk):
     chatgroup = get_object_or_404(ChatGroup, pk=pk)
     if request.user != chatgroup.owner:
         raise PermissionDenied()
-    chatgroup.delete()
+    chatgroup.chat.delete()
     return redirect("chat:chat")
 
 
