@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from friendship.models import Block
+from PIL import Image
 
 
 class Chat(models.Model):
@@ -93,6 +94,15 @@ class ChatGroup(models.Model):
 
     def get_ordinary_members(self):
         return self.chat.members.exclude(pk=self.owner.pk)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.image:
+            img = Image.open(self.image.path)
+            output_size = (96, 96)
+            img = img.resize(output_size)
+            img.save(self.image.path)
 
     def __str__(self):
         return self.name
